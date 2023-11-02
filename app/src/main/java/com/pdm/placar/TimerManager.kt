@@ -20,15 +20,13 @@ class TimerManager(private val updateCallback: () -> Unit) {
                     seconds++
                     updateCallback()
                     if (seconds >= timeLimit + extraTime) {
-
                         if (!isSecondHalf) {
                             isSecondHalf = true
                             timeLimit *= 2
+                            seconds -= extraTime
                             extraTime = 0
-                            stopTimer()
-                        } else {
-                            stopTimer()
                         }
+                        stopTimer()
                     } else {
                         handler.postDelayed(this, 1000)
                     }
@@ -53,6 +51,7 @@ class TimerManager(private val updateCallback: () -> Unit) {
         }
         timerRunnable = null
         seconds = 0
+        isSecondHalf = false
         updateCallback()
     }
 
