@@ -8,17 +8,34 @@ class TimerManager(private val updateCallback: () -> Unit) {
     private var seconds = 0
     private var isTimerRunning = false
     private var timerRunnable: Runnable? = null
+    private var timeLimit = 30 //2700
+    private var extraTime = 0
+    private var isSecondHalf = false
 
     fun startTimer() {
-        isTimerRunning = true
-        timerRunnable = object : Runnable {
-            override fun run() {
-                seconds++
-                updateCallback()
-                handler.postDelayed(this, 1000)
+        if (seconds < timeLimit + extraTime) {
+            isTimerRunning = true
+            timerRunnable = object : Runnable {
+                override fun run() {
+                    seconds++
+                    updateCallback()
+                    if (seconds >= timeLimit + extraTime) {
+
+                        if (!isSecondHalf) {
+                            isSecondHalf = true
+                            timeLimit *= 2
+                            extraTime = 0
+                            stopTimer()
+                        } else {
+                            stopTimer()
+                        }
+                    } else {
+                        handler.postDelayed(this, 1000)
+                    }
+                }
             }
+            timerRunnable?.let { handler.post(it) }
         }
-        timerRunnable?.let { handler.post(it) }
     }
 
     fun stopTimer() {
@@ -47,9 +64,17 @@ class TimerManager(private val updateCallback: () -> Unit) {
         return isTimerRunning
     }
 
+    fun isSecondHalf(): Boolean {
+        return isSecondHalf
+    }
+
     fun restoreTimerState(savedSeconds: Int, savedIsTimerRunning: Boolean) {
         seconds = savedSeconds
         isTimerRunning = savedIsTimerRunning
+    }
+
+    fun setupExtraTime(seconds: Int) {
+        extraTime = seconds
     }
 
     companion object {

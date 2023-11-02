@@ -1,31 +1,65 @@
 package com.pdm.placar
 
+import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.content.SharedPreferences
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
+import android.text.Editable
+import androidx.appcompat.app.AppCompatActivity
+import com.pdm.placar.databinding.ActivitySettingsBinding
 
 class SettingsActivity : AppCompatActivity() {
+    private lateinit var binding: ActivitySettingsBinding
+    private lateinit var sharedPreferences: SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+        sharedPreferences = getSharedPreferences(MainActivity.SHARED_PREFERENCES, Context.MODE_PRIVATE)
 
-        val teamANameEditText: EditText = findViewById(R.id.teamANameEditText)
-        val teamBNameEditText: EditText = findViewById(R.id.teamBNameEditText)
-        val saveButton: Button = findViewById(R.id.saveButton)
+        restoreFields()
+        onSaveClicked()
+    }
 
-        saveButton.setOnClickListener {
-            val teamA = teamANameEditText.text.toString()
-            val teamB = teamBNameEditText.text.toString()
+    private fun onSaveClicked() {
+        binding.saveButton.setOnClickListener {
+            val teamA = binding.teamANameEditText.text.toString()
+            val teamB = binding.teamBNameEditText.text.toString()
+            val extraTime = binding.extraTime.text.toString()
+
+            sharedPreferences
+                .edit()
+                .putString(TEAM_A_NAME, teamA)
+                .putString(TEAM_B_NAME, teamB)
+                .putString(EXTRA_TIME, extraTime)
+                .apply()
 
             val intent = Intent(this, MainActivity::class.java)
 
-            intent.putExtra("teamAName", teamA)
-            intent.putExtra("teamBName", teamB)
+            intent.putExtra(TEAM_A_NAME, teamA)
+            intent.putExtra(TEAM_B_NAME, teamB)
+            intent.putExtra(EXTRA_TIME, extraTime)
 
             startActivity(intent)
             finish()
         }
+    }
+
+    private fun restoreFields() {
+        val teamAName = sharedPreferences.getString(TEAM_A_NAME, "")
+        binding.teamANameEditText.text = Editable.Factory.getInstance().newEditable(teamAName)
+
+        val teamBName = sharedPreferences.getString(TEAM_B_NAME, "")
+        binding.teamBNameEditText.text = Editable.Factory.getInstance().newEditable(teamBName)
+
+        val extraTime = sharedPreferences.getString(EXTRA_TIME, "")
+        binding.extraTime.text = Editable.Factory.getInstance().newEditable(extraTime)
+    }
+
+    companion object {
+        const val TEAM_A_NAME = "TEAM_A_NAME"
+        const val TEAM_B_NAME = "TEAM_B_NAME"
+        const val EXTRA_TIME = "EXTRA_TIME"
     }
 }

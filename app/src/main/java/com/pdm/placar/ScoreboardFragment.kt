@@ -43,6 +43,7 @@ class ScoreboardFragment : Fragment() {
         updateTimerText()
         updateTeamsNames()
         updateScoreboard()
+        updateTimeConfig()
 
         onTimeClicked()
         onMenuClicked()
@@ -60,9 +61,19 @@ class ScoreboardFragment : Fragment() {
             .apply()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        sharedPreferences
+            .edit()
+            .putInt(TimerManager.TIMER_KEY, timerManager.getTimerValue())
+            .putBoolean(TimerManager.TIMER_RUNNING_KEY, timerManager.isTimerRunning())
+            .apply()
+    }
+
     private fun updateTeamsNames() {
-        val newNameA = requireActivity().intent.getStringExtra("teamAName")
-        val newNameB = requireActivity().intent.getStringExtra("teamBName")
+        val newNameA = requireActivity().intent.getStringExtra(SettingsActivity.TEAM_A_NAME)
+        val newNameB = requireActivity().intent.getStringExtra(SettingsActivity.TEAM_B_NAME)
         newNameA?.let { viewModel.teamA.name = it }
         newNameB?.let { viewModel.teamB.name = it }
     }
@@ -168,6 +179,23 @@ class ScoreboardFragment : Fragment() {
         val remainingSeconds = timerManager.getTimerValue() % 60
         val timeText = String.format("%d:%02d", minutes, remainingSeconds)
         binding.timer.text = timeText
+
+        val isSecondHalf = timerManager.isSecondHalf()
+        if (isSecondHalf) {
+            binding.half.text = "2º"
+        } else {
+            binding.half.text = "1º"
+        }
+    }
+
+    private fun updateTimeConfig() {
+        val extraTime = requireActivity().intent.getStringExtra(SettingsActivity.EXTRA_TIME)
+        val extraSeconds = if (!extraTime.isNullOrEmpty()) extraTime.toInt().times(60) else 0
+        timerManager.setupExtraTime(extraSeconds)
+        if (!extraTime.isNullOrEmpty()) {
+            val formattedExtraTime = "+$extraTime"
+            binding.extraTime.text = formattedExtraTime
+        }
     }
 
     companion object {
