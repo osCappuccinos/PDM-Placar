@@ -3,7 +3,7 @@ package com.pdm.placar
 import android.os.Handler
 import android.os.Looper
 
-class TimerManager(private val updateCallback: () -> Unit) {
+object TimerManager {
     private val handler = Handler(Looper.getMainLooper())
     private var seconds = 0
     private var isTimerRunning = false
@@ -12,7 +12,7 @@ class TimerManager(private val updateCallback: () -> Unit) {
     private var extraTime = 0
     private var isSecondHalf = false
 
-    fun startTimer() {
+    fun startTimer(updateCallback: () -> Unit) {
         if (seconds < timeLimit + extraTime) {
             isTimerRunning = true
             timerRunnable = object : Runnable {
@@ -44,13 +44,14 @@ class TimerManager(private val updateCallback: () -> Unit) {
         timerRunnable = null
     }
 
-    fun resetTimer() {
+    fun resetTimer(updateCallback: () -> Unit) {
         isTimerRunning = false
         timerRunnable?.let {
             handler.removeCallbacks(it)
         }
         timerRunnable = null
         seconds = 0
+        if (isSecondHalf) timeLimit /= 2
         isSecondHalf = false
         updateCallback()
     }
@@ -74,10 +75,5 @@ class TimerManager(private val updateCallback: () -> Unit) {
 
     fun setupExtraTime(seconds: Int) {
         extraTime = seconds
-    }
-
-    companion object {
-        const val TIMER_KEY = "TIMER_VALUE"
-        const val TIMER_RUNNING_KEY = "TIMER_RUNNING"
     }
 }

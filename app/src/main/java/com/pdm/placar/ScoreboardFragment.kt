@@ -18,7 +18,7 @@ class ScoreboardFragment : Fragment() {
     private lateinit var binding: FragmentScoreboardBinding
     private lateinit var sharedPreferences: SharedPreferences
 
-    private val timerManager = TimerManager { updateTimerText() }
+    private val timerManager = TimerManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,8 +29,8 @@ class ScoreboardFragment : Fragment() {
         viewModel = ViewModelProvider(requireActivity()).get(ScoreboardViewModel::class.java)
 
         sharedPreferences = requireContext().getSharedPreferences(MainActivity.SHARED_PREFERENCES, Context.MODE_PRIVATE)
-        val seconds = sharedPreferences.getInt(TimerManager.TIMER_KEY, 0)
-        val isTimerRunning = sharedPreferences.getBoolean(TimerManager.TIMER_RUNNING_KEY, false)
+        val seconds = sharedPreferences.getInt(TIMER_KEY, 0)
+        val isTimerRunning = sharedPreferences.getBoolean(TIMER_RUNNING_KEY, false)
         timerManager.restoreTimerState(seconds, isTimerRunning)
 
         return binding.root
@@ -39,6 +39,7 @@ class ScoreboardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        stopTimer()
         startTimer()
         updateTimerText()
         updateTeamsNames()
@@ -56,8 +57,8 @@ class ScoreboardFragment : Fragment() {
 
         sharedPreferences
             .edit()
-            .putInt(TimerManager.TIMER_KEY, timerManager.getTimerValue())
-            .putBoolean(TimerManager.TIMER_RUNNING_KEY, timerManager.isTimerRunning())
+            .putInt(TIMER_KEY, timerManager.getTimerValue())
+            .putBoolean(TIMER_RUNNING_KEY, timerManager.isTimerRunning())
             .apply()
     }
 
@@ -66,8 +67,8 @@ class ScoreboardFragment : Fragment() {
 
         sharedPreferences
             .edit()
-            .putInt(TimerManager.TIMER_KEY, timerManager.getTimerValue())
-            .putBoolean(TimerManager.TIMER_RUNNING_KEY, timerManager.isTimerRunning())
+            .putInt(TIMER_KEY, timerManager.getTimerValue())
+            .putBoolean(TIMER_RUNNING_KEY, timerManager.isTimerRunning())
             .apply()
     }
 
@@ -127,9 +128,7 @@ class ScoreboardFragment : Fragment() {
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_start_timer -> {
-                    if (!timerManager.isTimerRunning()) {
-                        startTimer()
-                    }
+                    startTimer()
                     return@setOnMenuItemClickListener true
                 }
                 R.id.action_stop_timer -> {
@@ -163,7 +162,7 @@ class ScoreboardFragment : Fragment() {
     }
 
     private fun startTimer() {
-        timerManager.startTimer()
+        timerManager.startTimer { updateTimerText() }
     }
 
     private fun stopTimer() {
@@ -171,7 +170,7 @@ class ScoreboardFragment : Fragment() {
     }
 
     private fun resetTimer() {
-        timerManager.resetTimer()
+        timerManager.resetTimer { updateTimerText() }
     }
 
     private fun updateTimerText() {
@@ -199,6 +198,7 @@ class ScoreboardFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance() = ScoreboardFragment()
+        const val TIMER_KEY = "TIMER_VALUE"
+        const val TIMER_RUNNING_KEY = "TIMER_RUNNING"
     }
 }
