@@ -1,6 +1,8 @@
 package com.pdm.placar
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -22,6 +24,12 @@ class ScoreboardFragment : Fragment() {
 
     private lateinit var binding: FragmentScoreboardBinding
 
+    private lateinit var sharedPreferences: SharedPreferences
+
+    private val timerKey = "TIMER_VALUE"
+
+    private val timerRunningKey = "TIMER_RUNNING"
+
 
     private var handler = Handler(Looper.getMainLooper())
     private var seconds = 0
@@ -42,6 +50,9 @@ class ScoreboardFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         viewModel = ViewModelProvider(requireActivity()).get(ScoreboardViewModel::class.java)
+        sharedPreferences = requireContext().getSharedPreferences("MyTimerPreferences", Context.MODE_PRIVATE)
+        seconds = sharedPreferences.getInt(timerKey, 0)
+        isTimerRunning = sharedPreferences.getBoolean(timerRunningKey, false)
 
         binding = FragmentScoreboardBinding.inflate(inflater, container, false)
         return binding.root
@@ -55,7 +66,19 @@ class ScoreboardFragment : Fragment() {
         binding.menuButton.setOnClickListener { showPopupMenu(binding.menuButton) }
         onLeftSideClicked()
         onRightSideClicked()
-        startTimer()
+
+        if (isTimerRunning) {
+            startTimer()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // Save timer state to SharedPreferences when the fragment goes into the background
+        val editor = sharedPreferences.edit()
+        editor.putInt(timerKey, seconds)
+        editor.putBoolean(timerRunningKey, isTimerRunning)
+        editor.apply()
     }
 
     private fun updateTeamsNames() {
@@ -80,7 +103,10 @@ class ScoreboardFragment : Fragment() {
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_start_stop -> {
-                    viewModel.saveGameResult(viewModel.game)
+//                    viewModel.saveGameResult(viewModel.game)
+                    if (!isTimerRunning) {
+                        startTimer()
+                    }
                     return@setOnMenuItemClickListener true
                 }
                 R.id.action_undo -> {
@@ -125,12 +151,12 @@ class ScoreboardFragment : Fragment() {
         handler.removeCallbacks(timerRunnable)
     }
 
-//    private fun resetTimer() {
-//        isTimerRunning = false
-//        handler.removeCallbacks(timerRunnable)
-//        seconds = 0
-//        updateTimerText()
-//    }
+    private fun resetTimer() {
+        isTimerRunning = false
+        handler.removeCallbacks(timerRunnable)
+        seconds = 0
+        updateTimerText()
+    }
 
     private fun updateTimerText() {
         val minutes = seconds / 60
