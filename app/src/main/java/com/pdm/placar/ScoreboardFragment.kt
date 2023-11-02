@@ -1,7 +1,6 @@
 package com.pdm.placar
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
@@ -9,10 +8,7 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.pdm.placar.databinding.FragmentScoreboardBinding
@@ -30,6 +26,9 @@ class ScoreboardFragment : Fragment() {
 
     private val timerRunningKey = "TIMER_RUNNING"
 
+    private var halfTimeState = false
+    
+    private val timeToChangeHalfState = 30
 
     private var handler = Handler(Looper.getMainLooper())
     private var seconds = 0
@@ -40,6 +39,18 @@ class ScoreboardFragment : Fragment() {
             if (isTimerRunning) {
                 seconds++
                 updateTimerText()
+
+                if (seconds >= timeToChangeHalfState) {
+                    halfTimeState = true
+                    // You can perform any state-specific actions here
+                }
+
+                if (halfTimeState) {
+                    binding.half.text = "2º"
+                } else {
+                    binding.half.text = "1º"
+                }
+
                 handler.postDelayed(this, 1000) // Run this Runnable every second
             }
         }
@@ -48,7 +59,7 @@ class ScoreboardFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         viewModel = ViewModelProvider(requireActivity()).get(ScoreboardViewModel::class.java)
         sharedPreferences = requireContext().getSharedPreferences("MyTimerPreferences", Context.MODE_PRIVATE)
         seconds = sharedPreferences.getInt(timerKey, 0)
@@ -70,6 +81,13 @@ class ScoreboardFragment : Fragment() {
         if (isTimerRunning) {
             startTimer()
         }
+
+        val minutes = seconds / 60
+        val remainingSeconds = seconds % 60
+        val timeText = String.format("%d:%02d", minutes, remainingSeconds)
+        binding.timer.text = timeText
+
+
     }
 
     override fun onPause() {
@@ -110,13 +128,15 @@ class ScoreboardFragment : Fragment() {
                     return@setOnMenuItemClickListener true
                 }
                 R.id.action_undo -> {
-                    viewModel.undoScoreIncrease()
-                    updateScoreboard()
+//                    viewModel.undoScoreIncrease()
+//                    updateScoreboard()
+                    stopTimer()
                     return@setOnMenuItemClickListener true
                 }
                 R.id.action_config -> {
-                    val intent = Intent(requireContext(), SettingsActivity::class.java)
-                    startActivity(intent)
+//                    val intent = Intent(requireContext(), SettingsActivity::class.java)
+//                    startActivity(intent)
+                    resetTimer()
                     return@setOnMenuItemClickListener true
                 }
                 else -> return@setOnMenuItemClickListener false

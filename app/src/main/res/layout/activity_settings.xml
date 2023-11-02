@@ -29,12 +29,24 @@
         android:padding="16dp"
         android:layout_margin="8dp"/>
 
+    <EditText
+        android:id="@+id/extraTime"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Acréscimos"
+        android:inputType="datetime"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/teamBNameEditText"
+        android:padding="16dp"
+        android:layout_margin="8dp"/>
+
     <Button
         android:id="@+id/saveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Save"
-        app:layout_constraintTop_toBottomOf="@+id/teamBNameEditText"
+        app:layout_constraintTop_toBottomOf="@+id/extraTime"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="16dp"/>
