@@ -2,6 +2,8 @@ package com.pdm.placar
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,11 +13,29 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.pdm.placar.databinding.FragmentScoreboardBinding
 import com.pdm.placar.viewmodels.ScoreboardViewModel
 
 class ScoreboardFragment : Fragment() {
 
     private lateinit var viewModel: ScoreboardViewModel
+
+    private lateinit var binding: FragmentScoreboardBinding
+
+
+    private var handler = Handler(Looper.getMainLooper())
+    private var seconds = 0
+    private var isTimerRunning = false
+
+    private val timerRunnable = object : Runnable {
+        override fun run() {
+            if (isTimerRunning) {
+                seconds++
+                updateTimerText()
+                handler.postDelayed(this, 1000) // Run this Runnable every second
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -23,7 +43,8 @@ class ScoreboardFragment : Fragment() {
     ): View? {
         viewModel = ViewModelProvider(requireActivity()).get(ScoreboardViewModel::class.java)
 
-        return inflater.inflate(R.layout.fragment_scoreboard, container, false)
+        binding = FragmentScoreboardBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -31,14 +52,10 @@ class ScoreboardFragment : Fragment() {
 
         updateTeamsNames()
         updateScoreboard()
-
-        val menuButton = view.findViewById<Button>(R.id.menuButton)
-        menuButton.setOnClickListener { showPopupMenu(menuButton) }
-
-        val leftSide: ConstraintLayout = view.findViewById(R.id.left_side)
-        val rightSide: ConstraintLayout = view.findViewById(R.id.right_side)
-        onLeftSideClicked(leftSide)
-        onRightSideClicked(rightSide)
+        binding.menuButton.setOnClickListener { showPopupMenu(binding.menuButton) }
+        onLeftSideClicked()
+        onRightSideClicked()
+        startTimer()
     }
 
     private fun updateTeamsNames() {
@@ -49,17 +66,11 @@ class ScoreboardFragment : Fragment() {
     }
 
     private fun updateScoreboard() {
-        val teamAName: TextView? = view?.findViewById(R.id.teamAName)
-        teamAName?.text = viewModel.teamA.name
+        binding.teamAName.text = viewModel.teamA.name
+        binding.teamAScore.text = viewModel.teamA.score.toString()
 
-        val teamAScore: TextView? = view?.findViewById(R.id.teamAScore)
-        teamAScore?.text = viewModel.teamA.score.toString()
-
-        val teamBName: TextView? = view?.findViewById(R.id.teamBName)
-        teamBName?.text = viewModel.teamB.name
-
-        val teamBScore: TextView? = view?.findViewById(R.id.teamBScore)
-        teamBScore?.text = viewModel.teamB.score.toString()
+        binding.teamBName.text = viewModel.teamB.name
+        binding.teamBScore.text = viewModel.teamB.score.toString()
     }
 
     private fun showPopupMenu(view: View) {
@@ -88,22 +99,44 @@ class ScoreboardFragment : Fragment() {
         popupMenu.show()
     }
 
-    private fun onLeftSideClicked(leftSide: ConstraintLayout) {
-        leftSide.setOnClickListener {
-            val teamAScore = view?.findViewById<TextView>(R.id.teamAScore)
+    private fun onLeftSideClicked() {
+        binding.leftSide.setOnClickListener {
             viewModel.increaseScoreBy1(viewModel.teamA)
             val currentScore = viewModel.teamA.score
-            teamAScore?.text = (currentScore).toString()
+            binding.teamAScore.text = (currentScore).toString()
         }
     }
 
-    private fun onRightSideClicked(rightSide: ConstraintLayout) {
-        rightSide.setOnClickListener {
-            val teamBScore = view?.findViewById<TextView>(R.id.teamBScore)
+    private fun onRightSideClicked() {
+        binding.rightSide.setOnClickListener {
             viewModel.increaseScoreBy1(viewModel.teamB)
             val currentScore = viewModel.teamB.score
-            teamBScore?.text = (currentScore).toString()
+            binding.teamBScore.text = (currentScore).toString()
         }
+    }
+
+    private fun startTimer() {
+        isTimerRunning = true
+        handler.post(timerRunnable)
+    }
+
+    private fun stopTimer() {
+        isTimerRunning = false
+        handler.removeCallbacks(timerRunnable)
+    }
+
+//    private fun resetTimer() {
+//        isTimerRunning = false
+//        handler.removeCallbacks(timerRunnable)
+//        seconds = 0
+//        updateTimerText()
+//    }
+
+    private fun updateTimerText() {
+        val minutes = seconds / 60
+        val remainingSeconds = seconds % 60
+        val timeText = String.format("%d:%02d", minutes, remainingSeconds)
+        binding.timer.text = timeText
     }
 
     companion object {
