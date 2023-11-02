@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_start_timer"
+        android:title="Começar timer" />
+    <item
+        android:id="@+id/action_stop_timer"
+        android:title="Parar timer" />
+    <item
+        android:id="@+id/action_reset_timer"
+        android:title="Resetar timer" />
+</menu>

@@ -34,7 +34,10 @@ class ScoreboardViewModel(application: Application) : AndroidViewModel(applicati
 
     fun saveGameResult(game: Game) {
         val numMatches = sharedPreferences.getInt("numberMatch", 0) + 1
-        sharedPreferences.edit().putInt("numberMatch", numMatches).apply()
+        sharedPreferences
+            .edit()
+            .putInt("numberMatch", numMatches)
+            .apply()
 
         val byteArrayOutputStream = ByteArrayOutputStream()
         val objectOutputStream = ObjectOutputStream(byteArrayOutputStream)

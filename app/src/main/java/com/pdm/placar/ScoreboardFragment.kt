@@ -1,10 +1,9 @@
 package com.pdm.placar
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,88 +14,50 @@ import com.pdm.placar.databinding.FragmentScoreboardBinding
 import com.pdm.placar.viewmodels.ScoreboardViewModel
 
 class ScoreboardFragment : Fragment() {
-
     private lateinit var viewModel: ScoreboardViewModel
-
     private lateinit var binding: FragmentScoreboardBinding
-
     private lateinit var sharedPreferences: SharedPreferences
 
-    private val timerKey = "TIMER_VALUE"
-
-    private val timerRunningKey = "TIMER_RUNNING"
-
-    private var halfTimeState = false
-    
-    private val timeToChangeHalfState = 30
-
-    private var handler = Handler(Looper.getMainLooper())
-    private var seconds = 0
-    private var isTimerRunning = false
-
-    private val timerRunnable = object : Runnable {
-        override fun run() {
-            if (isTimerRunning) {
-                seconds++
-                updateTimerText()
-
-                if (seconds >= timeToChangeHalfState) {
-                    halfTimeState = true
-                    // You can perform any state-specific actions here
-                }
-
-                if (halfTimeState) {
-                    binding.half.text = "2º"
-                } else {
-                    binding.half.text = "1º"
-                }
-
-                handler.postDelayed(this, 1000) // Run this Runnable every second
-            }
-        }
-    }
+    private val timerManager = TimerManager { updateTimerText() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewModel = ViewModelProvider(requireActivity()).get(ScoreboardViewModel::class.java)
-        sharedPreferences = requireContext().getSharedPreferences("MyTimerPreferences", Context.MODE_PRIVATE)
-        seconds = sharedPreferences.getInt(timerKey, 0)
-        isTimerRunning = sharedPreferences.getBoolean(timerRunningKey, false)
-
         binding = FragmentScoreboardBinding.inflate(inflater, container, false)
+
+        viewModel = ViewModelProvider(requireActivity()).get(ScoreboardViewModel::class.java)
+
+        sharedPreferences = requireContext().getSharedPreferences(MainActivity.SHARED_PREFERENCES, Context.MODE_PRIVATE)
+        val seconds = sharedPreferences.getInt(TimerManager.TIMER_KEY, 0)
+        val isTimerRunning = sharedPreferences.getBoolean(TimerManager.TIMER_RUNNING_KEY, false)
+        timerManager.restoreTimerState(seconds, isTimerRunning)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        startTimer()
+        updateTimerText()
         updateTeamsNames()
         updateScoreboard()
-        binding.menuButton.setOnClickListener { showPopupMenu(binding.menuButton) }
+
+        onTimeClicked()
+        onMenuClicked()
         onLeftSideClicked()
         onRightSideClicked()
-
-        if (isTimerRunning) {
-            startTimer()
-        }
-
-        val minutes = seconds / 60
-        val remainingSeconds = seconds % 60
-        val timeText = String.format("%d:%02d", minutes, remainingSeconds)
-        binding.timer.text = timeText
-
-
     }
 
     override fun onPause() {
         super.onPause()
-        // Save timer state to SharedPreferences when the fragment goes into the background
-        val editor = sharedPreferences.edit()
-        editor.putInt(timerKey, seconds)
-        editor.putBoolean(timerRunningKey, isTimerRunning)
-        editor.apply()
+
+        sharedPreferences
+            .edit()
+            .putInt(TimerManager.TIMER_KEY, timerManager.getTimerValue())
+            .putBoolean(TimerManager.TIMER_RUNNING_KEY, timerManager.isTimerRunning())
+            .apply()
     }
 
     private fun updateTeamsNames() {
@@ -114,6 +75,14 @@ class ScoreboardFragment : Fragment() {
         binding.teamBScore.text = viewModel.teamB.score.toString()
     }
 
+    private fun onMenuClicked() {
+        binding.menuButton.setOnClickListener { showPopupMenu(binding.menuButton) }
+    }
+
+    private fun onTimeClicked() {
+        binding.timer.setOnClickListener { showTimePopupMenu(binding.timer) }
+    }
+
     private fun showPopupMenu(view: View) {
         val popupMenu = PopupMenu(requireContext(), view)
         popupMenu.menuInflater.inflate(R.menu.action_menu, popupMenu.menu)
@@ -121,21 +90,42 @@ class ScoreboardFragment : Fragment() {
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_start_stop -> {
-//                    viewModel.saveGameResult(viewModel.game)
-                    if (!isTimerRunning) {
+                    viewModel.saveGameResult(viewModel.game)
+                    return@setOnMenuItemClickListener true
+                }
+                R.id.action_undo -> {
+                    viewModel.undoScoreIncrease()
+                    updateScoreboard()
+                    return@setOnMenuItemClickListener true
+                }
+                R.id.action_config -> {
+                    val intent = Intent(requireContext(), SettingsActivity::class.java)
+                    startActivity(intent)
+                    return@setOnMenuItemClickListener true
+                }
+                else -> return@setOnMenuItemClickListener false
+            }
+        }
+        popupMenu.show()
+    }
+
+    private fun showTimePopupMenu(view: View) {
+        val popupMenu = PopupMenu(requireContext(), view)
+        popupMenu.menuInflater.inflate(R.menu.timer_menu, popupMenu.menu)
+
+        popupMenu.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_start_timer -> {
+                    if (!timerManager.isTimerRunning()) {
                         startTimer()
                     }
                     return@setOnMenuItemClickListener true
                 }
-                R.id.action_undo -> {
-//                    viewModel.undoScoreIncrease()
-//                    updateScoreboard()
+                R.id.action_stop_timer -> {
                     stopTimer()
                     return@setOnMenuItemClickListener true
                 }
-                R.id.action_config -> {
-//                    val intent = Intent(requireContext(), SettingsActivity::class.java)
-//                    startActivity(intent)
+                R.id.action_reset_timer -> {
                     resetTimer()
                     return@setOnMenuItemClickListener true
                 }
@@ -162,25 +152,20 @@ class ScoreboardFragment : Fragment() {
     }
 
     private fun startTimer() {
-        isTimerRunning = true
-        handler.post(timerRunnable)
+        timerManager.startTimer()
     }
 
     private fun stopTimer() {
-        isTimerRunning = false
-        handler.removeCallbacks(timerRunnable)
+        timerManager.stopTimer()
     }
 
     private fun resetTimer() {
-        isTimerRunning = false
-        handler.removeCallbacks(timerRunnable)
-        seconds = 0
-        updateTimerText()
+        timerManager.resetTimer()
     }
 
     private fun updateTimerText() {
-        val minutes = seconds / 60
-        val remainingSeconds = seconds % 60
+        val minutes = timerManager.getTimerValue() / 60
+        val remainingSeconds = timerManager.getTimerValue() % 60
         val timeText = String.format("%d:%02d", minutes, remainingSeconds)
         binding.timer.text = timeText
     }
