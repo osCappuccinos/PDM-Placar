@@ -8,10 +8,10 @@
     tools:context=".SettingsActivity">
 
     <EditText
-        android:id="@+id/teamANameEditText"
+        android:id="@+id/matchNameEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Team A Name"
+        android:hint="Nome da partida"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -19,10 +19,21 @@
         android:layout_margin="8dp"/>
 
     <EditText
+        android:id="@+id/teamANameEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Nome do 1º time"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/matchNameEditText"
+        android:padding="16dp"
+        android:layout_margin="8dp"/>
+
+    <EditText
         android:id="@+id/teamBNameEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Team B Name"
+        android:hint="Nome do 2º time"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/teamANameEditText"
@@ -40,6 +51,7 @@
         app:layout_constraintTop_toBottomOf="@+id/teamBNameEditText"
         android:padding="16dp"
         android:layout_margin="8dp"/>
+
 
     <Button
         android:id="@+id/saveButton"

@@ -27,12 +27,14 @@ class SettingsActivity : AppCompatActivity() {
             val teamA = binding.teamANameEditText.text.toString()
             val teamB = binding.teamBNameEditText.text.toString()
             val extraTime = binding.extraTime.text.toString()
+            val matchName = binding.matchNameEditText.text.toString()
 
             sharedPreferences
                 .edit()
                 .putString(TEAM_A_NAME, teamA)
                 .putString(TEAM_B_NAME, teamB)
                 .putString(EXTRA_TIME, extraTime)
+                .putString(MATCH_NAME, matchName)
                 .apply()
 
             val intent = Intent(this, MainActivity::class.java)
@@ -40,6 +42,7 @@ class SettingsActivity : AppCompatActivity() {
             intent.putExtra(TEAM_A_NAME, teamA)
             intent.putExtra(TEAM_B_NAME, teamB)
             intent.putExtra(EXTRA_TIME, extraTime)
+            intent.putExtra(MATCH_NAME, matchName)
 
             startActivity(intent)
             finish()
@@ -55,11 +58,16 @@ class SettingsActivity : AppCompatActivity() {
 
         val extraTime = sharedPreferences.getString(EXTRA_TIME, "")
         binding.extraTime.text = Editable.Factory.getInstance().newEditable(extraTime)
+
+        val matchName = sharedPreferences.getString(MATCH_NAME, "") // Retrieve the match name
+        binding.matchNameEditText.text = Editable.Factory.getInstance().newEditable(matchName)
     }
+
 
     companion object {
         const val TEAM_A_NAME = "TEAM_A_NAME"
         const val TEAM_B_NAME = "TEAM_B_NAME"
         const val EXTRA_TIME = "EXTRA_TIME"
+        const val MATCH_NAME = "MATCH_NAME" // Key for the match name
     }
 }
