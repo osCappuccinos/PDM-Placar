@@ -13,9 +13,9 @@ import java.nio.charset.StandardCharsets
 class ScoreboardViewModel(application: Application) : AndroidViewModel(application) {
     private val sharedPreferences = application.getSharedPreferences(MainActivity.SHARED_PREFERENCES, Context.MODE_PRIVATE)
     private val scoreStack: ArrayDeque<Pair<String, Int>> = ArrayDeque()
-    val teamA = Team(name = "teamA", score = 0)
-    val teamB = Team(name = "teamB", score = 0)
-    val game = Game(teamA = teamA, teamB = teamB)
+    val teamA = Team(name = "Time 1", score = 0)
+    val teamB = Team(name = "Time 2", score = 0)
+    val game = Game(title = "Partida", teamA = teamA, teamB = teamB)
 
     fun increaseScoreBy1(team: Team) {
             team.score += 1

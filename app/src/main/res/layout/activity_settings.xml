@@ -8,40 +8,46 @@
     tools:context=".SettingsActivity">
 
     <EditText
-        android:id="@+id/matchNameEditText"
+        android:id="@+id/match_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="32sp"
         android:background="@color/white"
-        android:hint="Nome da partida"
+        android:hint="@string/match_title"
+        android:textColor="@color/black"
+        android:textColorHint="#919191"
         android:padding="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/teamANameEditText"
+        android:id="@+id/team_a_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="32sp"
         android:background="@color/white"
-        android:hint="Nome do 1º time"
+        android:hint="@string/team_a_name_field"
+        android:textColor="@color/black"
+        android:textColorHint="#919191"
         android:padding="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/matchNameEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/match_name" />
 
     <EditText
-        android:id="@+id/teamBNameEditText"
+        android:id="@+id/team_b_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="32sp"
         android:background="@color/white"
-        android:hint="Nome do 2º time"
+        android:hint="@string/team_b_name_field"
+        android:textColor="@color/black"
+        android:textColorHint="#919191"
         android:padding="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/teamANameEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/team_a_name" />
 
     <EditText
         android:id="@+id/extraTime"
@@ -49,19 +55,21 @@
         android:layout_height="wrap_content"
         android:layout_margin="32sp"
         android:background="@android:color/white"
-        android:hint="Acréscimos"
+        android:hint="@string/extra_time_field"
         android:inputType="datetime"
+        android:textColor="@color/black"
+        android:textColorHint="#919191"
         android:padding="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/teamBNameEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/team_b_name" />
 
     <Button
         android:id="@+id/saveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Salvar"
+        android:text="@string/save"
         android:background="@drawable/button"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"

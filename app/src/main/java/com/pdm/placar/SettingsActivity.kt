@@ -24,10 +24,10 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun onSaveClicked() {
         binding.saveButton.setOnClickListener {
-            val teamA = binding.teamANameEditText.text.toString()
-            val teamB = binding.teamBNameEditText.text.toString()
+            val teamA = binding.teamAName.text.toString()
+            val teamB = binding.teamBName.text.toString()
             val extraTime = binding.extraTime.text.toString()
-            val matchName = binding.matchNameEditText.text.toString()
+            val matchName = binding.matchName.text.toString()
 
             sharedPreferences
                 .edit()
@@ -39,10 +39,10 @@ class SettingsActivity : AppCompatActivity() {
 
             val intent = Intent(this, MainActivity::class.java)
 
+            intent.putExtra(MATCH_NAME, matchName)
             intent.putExtra(TEAM_A_NAME, teamA)
             intent.putExtra(TEAM_B_NAME, teamB)
             intent.putExtra(EXTRA_TIME, extraTime)
-            intent.putExtra(MATCH_NAME, matchName)
 
             startActivity(intent)
             finish()
@@ -50,24 +50,24 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun restoreFields() {
+        val matchName = sharedPreferences.getString(MATCH_NAME, "")
+        binding.matchName.text = Editable.Factory.getInstance().newEditable(matchName)
+
         val teamAName = sharedPreferences.getString(TEAM_A_NAME, "")
-        binding.teamANameEditText.text = Editable.Factory.getInstance().newEditable(teamAName)
+        binding.teamAName.text = Editable.Factory.getInstance().newEditable(teamAName)
 
         val teamBName = sharedPreferences.getString(TEAM_B_NAME, "")
-        binding.teamBNameEditText.text = Editable.Factory.getInstance().newEditable(teamBName)
+        binding.teamBName.text = Editable.Factory.getInstance().newEditable(teamBName)
 
         val extraTime = sharedPreferences.getString(EXTRA_TIME, "")
         binding.extraTime.text = Editable.Factory.getInstance().newEditable(extraTime)
-
-        val matchName = sharedPreferences.getString(MATCH_NAME, "") // Retrieve the match name
-        binding.matchNameEditText.text = Editable.Factory.getInstance().newEditable(matchName)
     }
 
 
     companion object {
+        const val MATCH_NAME = "MATCH_NAME"
         const val TEAM_A_NAME = "TEAM_A_NAME"
         const val TEAM_B_NAME = "TEAM_B_NAME"
         const val EXTRA_TIME = "EXTRA_TIME"
-        const val MATCH_NAME = "MATCH_NAME" // Key for the match name
     }
 }

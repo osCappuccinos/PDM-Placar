@@ -73,8 +73,10 @@ class ScoreboardFragment : Fragment() {
     }
 
     private fun updateTeamsNames() {
+        val newTitle = requireActivity().intent.getStringExtra(SettingsActivity.MATCH_NAME)
         val newNameA = requireActivity().intent.getStringExtra(SettingsActivity.TEAM_A_NAME)
         val newNameB = requireActivity().intent.getStringExtra(SettingsActivity.TEAM_B_NAME)
+        newTitle?.let { viewModel.game.title = it }
         newNameA?.let { viewModel.teamA.name = it }
         newNameB?.let { viewModel.teamB.name = it }
     }

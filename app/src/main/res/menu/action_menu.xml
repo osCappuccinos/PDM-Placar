@@ -2,11 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/action_start_stop"
-        android:title="Salvar Jogo" />
+        android:title="@string/save_game"/>
     <item
         android:id="@+id/action_config"
-        android:title="Configurações" />
+        android:title="@string/configurations" />
     <item
         android:id="@+id/action_undo"
-        android:title="Desfazer último ponto" />
+        android:title="@string/undo" />
 </menu>

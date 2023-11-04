@@ -27,14 +27,20 @@ class GameAdapter(private val gameList: List<Game>) :
     }
 
     inner class GameViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val teamATextView: TextView = itemView.findViewById(R.id.teamATextView)
-        private val teamBTextView: TextView = itemView.findViewById(R.id.teamBTextView)
+        private val title: TextView = itemView.findViewById(R.id.title)
+
+        private val teamAName: TextView = itemView.findViewById(R.id.team_a_name)
+        private val teamAScore: TextView = itemView.findViewById(R.id.team_a_score)
+
+        private val teamBName: TextView = itemView.findViewById(R.id.team_b_name)
+        private val teamBScore: TextView = itemView.findViewById(R.id.team_b_score)
 
         fun bind(game: Game) {
-            val teamAResult = "${game.teamA.name}${game.teamA.score}"
-            val teamBResult = "${game.teamB.name}${game.teamB.score}"
-            teamATextView.text = teamAResult
-            teamBTextView.text = teamBResult
+            title.text = game.title
+            teamAName.text = game.teamA.name
+            teamBName.text = game.teamB.name
+            teamAScore.text = game.teamA.score.toString()
+            teamBScore.text = game.teamB.score.toString()
         }
     }
 }

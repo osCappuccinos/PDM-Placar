@@ -3,6 +3,7 @@ package com.pdm.placar
 import java.io.Serializable
 
 data class Game(
+    var title: String,
     val teamA: Team,
     val teamB: Team,
     val winner: String? = null,

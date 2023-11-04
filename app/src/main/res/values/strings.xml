@@ -16,4 +16,25 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="match_title">Nome da partida</string>
+    <string name="save">Salvar</string>
+    <string name="extra_time_field">Acréscimos</string>
+    <string name="team_a_name_field">Nome do 1º time</string>
+    <string name="team_b_name_field">Nome do 2º time</string>
+    <string name="team_a_score">0</string>
+    <string name="team_a_name">Team A</string>
+    <string name="team_b_score">0</string>
+    <string name="team_b_name">Team B</string>
+    <string name="menu">Menu</string>
+    <string name="half">1º</string>
+    <string name="timer">00:00</string>
+    <string name="match">Partida</string>
+    <string name="save_game">Salvar Jogo</string>
+    <string name="configurations">Configurações</string>
+    <string name="undo">Desfazer último ponto</string>
+    <string name="scoreboard">Placar</string>
+    <string name="history">Histórico</string>
+    <string name="start_timer">Começar timer</string>
+    <string name="stop_timer">Parar timer</string>
+    <string name="reset_timer">Resetar timer</string>
 </resources>

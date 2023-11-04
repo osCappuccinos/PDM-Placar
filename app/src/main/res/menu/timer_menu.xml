@@ -2,11 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/action_start_timer"
-        android:title="Começar timer" />
+        android:title="@string/start_timer" />
     <item
         android:id="@+id/action_stop_timer"
-        android:title="Parar timer" />
+        android:title="@string/stop_timer" />
     <item
         android:id="@+id/action_reset_timer"
-        android:title="Resetar timer" />
+        android:title="@string/reset_timer" />
 </menu>

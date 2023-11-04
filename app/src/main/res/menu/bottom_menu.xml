@@ -2,8 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_score"
-        android:title="Placar" />
+        android:title="@string/scoreboard"
+        android:iconTint="@color/green"
+        android:icon="@drawable/ic_football" />
     <item
         android:id="@+id/nav_history"
-        android:title="Histórico" />
+        android:title="@string/history"
+        android:iconTint="@color/green"
+        android:icon="@drawable/ic_history" />
 </menu>
