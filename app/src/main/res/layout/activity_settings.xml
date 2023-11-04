@@ -1,65 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/green"
     tools:context=".SettingsActivity">
 
     <EditText
         android:id="@+id/matchNameEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_margin="32sp"
+        android:background="@color/white"
         android:hint="Nome da partida"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         android:padding="16dp"
-        android:layout_margin="8dp"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/teamANameEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_margin="32sp"
+        android:background="@color/white"
         android:hint="Nome do 1º time"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/matchNameEditText"
         android:padding="16dp"
-        android:layout_margin="8dp"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/matchNameEditText" />
 
     <EditText
         android:id="@+id/teamBNameEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_margin="32sp"
+        android:background="@color/white"
         android:hint="Nome do 2º time"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/teamANameEditText"
         android:padding="16dp"
-        android:layout_margin="8dp"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/teamANameEditText" />
 
     <EditText
         android:id="@+id/extraTime"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_margin="32sp"
+        android:background="@android:color/white"
         android:hint="Acréscimos"
         android:inputType="datetime"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/teamBNameEditText"
         android:padding="16dp"
-        android:layout_margin="8dp"/>
-
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/teamBNameEditText" />
 
     <Button
         android:id="@+id/saveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Save"
-        app:layout_constraintTop_toBottomOf="@+id/extraTime"
+        android:layout_marginTop="16dp"
+        android:text="Salvar"
+        android:background="@drawable/button"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="16dp"/>
+        app:layout_constraintTop_toBottomOf="@+id/extraTime" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,8 +2,27 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.Placar" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/green</item>
+        <item name="colorPrimaryVariant">@color/darkgreen</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Status bar and navigation bar colors -->
+        <item name="android:statusBarColor" tools:targetApi="l">@color/darkgreen</item>
+        <item name="android:navigationBarColor" tools:targetApi="l">@color/white</item>
+        <!-- Accent colors. -->
+        <item name="colorSecondary">@color/green</item>
+        <item name="colorSecondaryVariant">@color/darkgreen</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <!-- Backgrounds and overlays. -->
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:colorBackgroundFloating">@color/white</item>
+        <!-- Text colors. -->
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/darkgreen</item>
+        <item name="popupMenuStyle">@color/black</item>
     </style>
 
-    <style name="Theme.Placar" parent="Base.Theme.Placar" />
+    <style name="Theme.Placar" parent="Base.Theme.Placar">
+        <!-- Customize your main theme here. -->
+    </style>
 </resources>
