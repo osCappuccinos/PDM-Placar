@@ -8,7 +8,7 @@ object TimerManager {
     private var seconds = 0
     private var isTimerRunning = false
     private var timerRunnable: Runnable? = null
-    private var timeLimit = 30 //2700
+    private var timeLimit = 2700 //45 min
     private var extraTime = 0
     private var isSecondHalf = false
 
